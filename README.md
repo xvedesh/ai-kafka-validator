@@ -19,7 +19,7 @@ It covers:
 - RestAssured-based API automation with Cucumber + TestNG execution
 - full CRUD coverage for `Client`, `Account`, `Portfolio`, and `Transaction`
 - Kafka E2E validation for successful create, update, patch, and delete flows
-- negative business validation scenarios with “no Kafka event published” assertions
+- negative business validation scenarios with "no Kafka event published" assertions
 - cross-entity business flow coverage across client, account, and transaction
 - JWT-based authentication flow against the mock API
 - Docker-based execution for Kafka, mock API, and Java test suite
@@ -174,7 +174,7 @@ Example server-side messages:
 
 ## Kafka Event Validation
 
-Kafka validation is not based on “first message in topic”. The framework consumes by matching the business key for the current scenario.
+Kafka validation is not based on "first message in topic". The framework consumes by matching the business key for the current scenario.
 
 Matching strategy:
 
@@ -648,12 +648,17 @@ Manual PowerShell command:
 
 ## Setup / Onboarding Agent
 
-The Setup / Onboarding Agent is a local RAG-style assistant for understanding, setting up, running, troubleshooting, and extending this framework.
+The Setup / Onboarding Agent is a repo-aware assistant for understanding, setting up, running, troubleshooting, and extending this framework.
+
+It supports two answer modes:
+
+- deterministic fallback mode, which is always available
+- optional LLM-backed mode, which uses retrieved project context plus an AI model when model access is configured
 
 Run one question directly:
 
 ```bash
-sh ./mvnw -q exec:java -Dexec.mainClass=com.analysis.onboarding.SetupOnboardingAgent -Dagent.question="How do I run only negative scenarios?"
+sh ./mvnw -q exec:java -Dexec.mainClass=com.analysis.onboarding.SetupOnboardingAgent -Dagent.question="How does this framework work?"
 ```
 
 Run interactive mode:
@@ -661,6 +666,12 @@ Run interactive mode:
 ```bash
 sh ./mvnw -q exec:java -Dexec.mainClass=com.analysis.onboarding.SetupOnboardingAgent
 ```
+
+Optional LLM configuration:
+
+- shared `.env` or environment variables: `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_BASE_URL`, `OPENAI_TEMPERATURE`
+- onboarding-specific overrides: `ONBOARDING_LLM_API_KEY`, `ONBOARDING_LLM_MODEL`, `ONBOARDING_LLM_BASE_URL`, `ONBOARDING_LLM_TEMPERATURE`
+- failure-agent-specific overrides: `FAILURE_LLM_API_KEY`, `FAILURE_LLM_MODEL`, `FAILURE_LLM_BASE_URL`, `FAILURE_LLM_TEMPERATURE`
 
 Additional details and usage examples are documented in [docs/onboarding-agent.md](docs/onboarding-agent.md).
 

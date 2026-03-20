@@ -31,6 +31,7 @@ public class FailureAnalyzer {
         return new FailureAnalysis(
                 evidence,
                 category,
+                buildLikelyLayer(category),
                 buildShortExplanation(evidence, category),
                 buildWhatHappened(evidence),
                 buildRootCause(evidence, category),
@@ -121,6 +122,18 @@ public class FailureAnalyzer {
         }
 
         return FailureCategory.UNKNOWN;
+    }
+
+    private String buildLikelyLayer(FailureCategory category) {
+        return switch (category) {
+            case API_ASSERTION_FAILURE -> "API";
+            case KAFKA_EVENT_NOT_FOUND, KAFKA_PAYLOAD_MISMATCH -> "Kafka";
+            case RELATIONSHIP_VALIDATION_FAILURE, DELETE_DEPENDENCY_FAILURE -> "Server/Business Rules";
+            case CONFIGURATION_ERROR -> "Configuration";
+            case INFRASTRUCTURE_ERROR -> "Infrastructure";
+            case TEST_DATA_ISSUE -> "Test Data/Scenario State";
+            case UNKNOWN -> "Unknown";
+        };
     }
 
     private String buildShortExplanation(FailureEvidence evidence, FailureCategory category) {

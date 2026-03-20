@@ -59,4 +59,11 @@ sh ./mvnw -q exec:java \
   -Dfailure.analysis.mode=latest
 ```
 
-The agent is intentionally deterministic first. It does not call external AI services and does not invent certainty when artifact evidence is incomplete.
+The agent remains deterministic first: category classification, evidence correlation, and code references are still produced locally from framework artifacts.
+
+Optional AI summary mode:
+
+- shared `.env` or environment variables: `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_BASE_URL`, `OPENAI_TEMPERATURE`
+- failure-agent-specific overrides: `FAILURE_LLM_API_KEY`, `FAILURE_LLM_MODEL`, `FAILURE_LLM_BASE_URL`, `FAILURE_LLM_TEMPERATURE`
+
+When LLM mode is available, the failure agent adds a short AI summary on top of the deterministic report. If model access is unavailable, it falls back to the deterministic report only without breaking the analysis flow.

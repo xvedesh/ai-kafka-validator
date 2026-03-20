@@ -17,6 +17,7 @@ public class SetupOnboardingAgent {
         String propertyQuestion = System.getProperty("agent.question", "").trim();
         if (!propertyQuestion.isEmpty()) {
             System.out.println(BANNER);
+            System.out.println("Mode: " + service.modeDescription());
             System.out.println(service.answer(propertyQuestion));
             return;
         }
@@ -24,16 +25,23 @@ public class SetupOnboardingAgent {
         if (args.length > 0) {
             String question = String.join(" ", args).trim();
             System.out.println(BANNER);
+            System.out.println("Mode: " + service.modeDescription());
             System.out.println(service.answer(question));
             return;
         }
 
         System.out.println(BANNER);
-        System.out.println("Ask about setup, execution, navigation, Kafka validation, troubleshooting, or enterprise adaptation.");
-        System.out.println("Examples:");
-        System.out.println("- How do I run the framework in Docker?");
+        System.out.println("Mode: " + service.modeDescription());
+        System.out.println("I can help you:");
+        System.out.println("- understand how the framework works");
+        System.out.println("- run it in Docker or locally");
+        System.out.println("- troubleshoot setup issues");
+        System.out.println("- find scenarios, tags, reports, and Kafka validations");
+        System.out.println("- explain how to adapt it for enterprise environments");
+        System.out.println();
+        System.out.println("Try asking:");
+        System.out.println("- How does this framework work?");
         System.out.println("- How do I run only negative scenarios?");
-        System.out.println("- How does Kafka publishing work in this framework?");
         System.out.println("- Why can't I run Kafka tests locally?");
         System.out.println("- How would I adapt this for a real Kafka cluster?");
         System.out.println("Type 'exit' to quit.");

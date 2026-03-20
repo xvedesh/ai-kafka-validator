@@ -1,96 +1,94 @@
 package com.analysis.onboarding;
 
 public enum QuestionIntent {
-    QUICK_START,
-    DOCKER_SETUP,
-    LOCAL_SETUP,
-    START_KAFKA_ONLY,
-    RUN_NEGATIVE,
-    RUN_KAFKA,
-    RERUN_FAILURES,
-    REPORTS,
-    RESET_DATA,
-    FAILURE_AGENT,
-    DEMO_PATH,
+    SMALL_TALK,
     FRAMEWORK_OVERVIEW,
-    KAFKA_FLOW,
+    SETUP_RUN,
+    TROUBLESHOOTING,
     PROJECT_NAVIGATION,
-    TROUBLESHOOT_KAFKA,
-    TROUBLESHOOT_SERVER,
-    TROUBLESHOOT_REPORTS,
-    ENTERPRISE_KAFKA,
-    ENTERPRISE_CICD,
-    ENTERPRISE_BACKEND,
-    ENTERPRISE_DATABASE,
-    UNKNOWN;
+    EXECUTION_HELP,
+    KAFKA_EXPLANATION,
+    AGENT_EXPLANATION,
+    ENTERPRISE_ADAPTATION,
+    UNKNOWN_BUT_GENERAL;
 
     public static QuestionIntent classify(String question) {
-        String normalized = question == null ? "" : question.toLowerCase();
+        String normalized = question == null ? "" : question.trim().toLowerCase();
+        if (normalized.isBlank()) {
+            return UNKNOWN_BUT_GENERAL;
+        }
 
-        if (containsAny(normalized, "quick start", "how do i start", "how do i begin", "how do i start?") ) {
-            return QUICK_START;
+        if (isSmallTalk(normalized)) {
+            return SMALL_TALK;
         }
-        if (containsAny(normalized, "demo", "fastest demo", "show this project", "demo flow")) {
-            return DEMO_PATH;
-        }
-        if (containsAny(normalized, "docker") && containsAny(normalized, "run", "start", "setup", "compose")) {
-            return DOCKER_SETUP;
-        }
-        if (containsAny(normalized, "start only kafka", "kafka only", "start kafka only")) {
-            return START_KAFKA_ONLY;
-        }
-        if (normalized.contains("kafka") && containsAny(normalized, "can't", "cannot", "unreachable", "not found", "why")) {
-            return TROUBLESHOOT_KAFKA;
-        }
-        if (containsAny(normalized, "run locally", "local setup", "locally", "hybrid local")) {
-            return LOCAL_SETUP;
-        }
-        if (containsAny(normalized, "negative scenario", "negative scenarios", "negative tests", "@negative")) {
-            return RUN_NEGATIVE;
-        }
-        if (containsAny(normalized, "transaction kafka", "account kafka", "portfolio kafka", "client kafka", "kafka tests", "kafka scenarios")) {
-            return RUN_KAFKA;
-        }
-        if (containsAny(normalized, "rerun failures", "rerun failed", "failed scenarios")) {
-            return RERUN_FAILURES;
-        }
-        if (containsAny(normalized, "report", "reports", "pretty report", "surefire", "cucumber report")) {
-            return REPORTS;
-        }
-        if (containsAny(normalized, "reset data", "seed", "seed-data", "restore data")) {
-            return RESET_DATA;
-        }
-        if (containsAny(normalized, "failure analysis", "failure agent")) {
-            return FAILURE_AGENT;
-        }
-        if (containsAny(normalized, "how does kafka", "where event", "publishes kafka", "publish account event", "kafka publishing", "kafka validation")) {
-            return KAFKA_FLOW;
-        }
-        if (containsAny(normalized, "project structure", "how framework works", "how does the framework work", "framework structure", "understand framework")) {
+        if (containsAny(normalized,
+                "what is this framework", "what is this project", "what is ai kafka validator",
+                "what does this framework do", "how does this framework work", "how does it work",
+                "framework overview", "give me an overview", "explain the framework", "understand the framework")) {
             return FRAMEWORK_OVERVIEW;
         }
-        if (containsAny(normalized, "where is", "which file", "where are", "navigate project", "navigation")) {
+        if (containsAny(normalized,
+                "why can't", "why cant", "cannot run", "can't run", "not working", "unreachable",
+                "no kafka events", "no kafka event", "kafka unreachable", "server not starting",
+                "api not starting", "report empty", "reports empty", "why is the report empty",
+                "reset-data not", "seed data not", "health check failing", "connection refused")) {
+            return TROUBLESHOOTING;
+        }
+        if (containsAny(normalized,
+                "how do i run it in docker", "run it in docker", "docker setup", "docker compose",
+                "how do i run it locally", "run it locally", "local setup", "quick start", "how do i start",
+                "start only kafka", "kafka only", "start kafka", "prerequisite", "prerequisites",
+                "reset test data", "reset data", "seed data", "setup")) {
+            return SETUP_RUN;
+        }
+        if (containsAny(normalized,
+                "run only kafka", "run only negative", "negative scenarios", "negative tests",
+                "kafka tests", "kafka scenarios", "transaction kafka", "account kafka", "portfolio kafka",
+                "client kafka", "where are the reports", "where are reports", "report path", "report paths",
+                "rerun failures", "rerun failed", "rerun failed scenarios", "fastest demo", "demo flow",
+                "run only", "which tag")) {
+            return EXECUTION_HELP;
+        }
+        if (containsAny(normalized,
+                "which file", "where is", "where are", "navigate", "navigation", "project structure",
+                "find the file", "where does", "where do", "which feature", "which features", "implemented")) {
             return PROJECT_NAVIGATION;
         }
-        if (containsAny(normalized, "api not starting", "server not starting", "cannot start server", "can't start server", "server unreachable")) {
-            return TROUBLESHOOT_SERVER;
+        if (containsAny(normalized,
+                "how does kafka", "kafka publishing", "kafka validation", "kafka flow",
+                "publish account event", "publish transaction event", "account events", "portfolio events",
+                "transaction events", "which file publishes")) {
+            return KAFKA_EXPLANATION;
         }
-        if (containsAny(normalized, "report empty", "reports empty", "why is the report empty")) {
-            return TROUBLESHOOT_REPORTS;
+        if (containsAny(normalized,
+                "failure analysis agent", "what does the failure analysis agent do", "onboarding agent",
+                "setup / onboarding agent", "setup agent", "what does the onboarding agent do")) {
+            return AGENT_EXPLANATION;
         }
-        if (containsAny(normalized, "real kafka", "kafka cluster", "multiple brokers", "sasl", "ssl", "topic naming", "enterprise kafka", "real broker")) {
-            return ENTERPRISE_KAFKA;
+        if (containsAny(normalized,
+                "real kafka", "kafka cluster", "multiple brokers", "schema registry", "sasl", "ssl",
+                "real backend", "real api", "database", "db", "cloud", "ci/cd", "ci cd",
+                "github actions", "jenkins", "azure devops", "enterprise", "external dependencies")) {
+            return ENTERPRISE_ADAPTATION;
         }
-        if (containsAny(normalized, "jenkins", "github actions", "azure devops", "ci/cd", "ci pipeline", "ci cd")) {
-            return ENTERPRISE_CICD;
-        }
-        if (containsAny(normalized, "real backend", "json-server", "adapt to real backend", "real api", "real service")) {
-            return ENTERPRISE_BACKEND;
-        }
-        if (containsAny(normalized, "database", "db", "seeded environment", "test environment")) {
-            return ENTERPRISE_DATABASE;
-        }
-        return UNKNOWN;
+        return UNKNOWN_BUT_GENERAL;
+    }
+
+    private static boolean isSmallTalk(String normalized) {
+        return normalized.equals("hi")
+                || normalized.equals("hello")
+                || normalized.equals("hey")
+                || normalized.equals("thanks")
+                || normalized.equals("thank you")
+                || normalized.equals("how are you")
+                || normalized.equals("who are you")
+                || normalized.equals("what can you do")
+                || normalized.startsWith("hi ")
+                || normalized.startsWith("hello ")
+                || normalized.startsWith("hey ")
+                || normalized.startsWith("how are you")
+                || normalized.startsWith("thanks ")
+                || normalized.startsWith("thank you ");
     }
 
     private static boolean containsAny(String text, String... values) {

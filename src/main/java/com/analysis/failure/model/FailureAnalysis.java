@@ -9,6 +9,7 @@ import java.util.List;
 public class FailureAnalysis {
     private final FailureEvidence evidence;
     private final FailureCategory category;
+    private final String likelyLayer;
     private final String shortExplanation;
     private final String whatHappened;
     private final String rootCause;
@@ -17,11 +18,12 @@ public class FailureAnalysis {
     private final List<String> nextChecks;
     private final String confidence;
 
-    public FailureAnalysis(FailureEvidence evidence, FailureCategory category, String shortExplanation,
+    public FailureAnalysis(FailureEvidence evidence, FailureCategory category, String likelyLayer, String shortExplanation,
                            String whatHappened, String rootCause, List<String> evidencePoints,
                            List<CodeReference> codeReferences, List<String> nextChecks, String confidence) {
         this.evidence = evidence;
         this.category = category;
+        this.likelyLayer = likelyLayer;
         this.shortExplanation = shortExplanation;
         this.whatHappened = whatHappened;
         this.rootCause = rootCause;
@@ -37,6 +39,10 @@ public class FailureAnalysis {
 
     public FailureCategory getCategory() {
         return category;
+    }
+
+    public String getLikelyLayer() {
+        return likelyLayer;
     }
 
     public String getShortExplanation() {

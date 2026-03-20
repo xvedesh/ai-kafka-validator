@@ -1,10 +1,41 @@
 # AI Kafka Validator - Setup / Onboarding Agent
 
-The Setup / Onboarding Agent is a local RAG-style assistant for understanding, setting up, running, troubleshooting, and extending this framework.
+The Setup / Onboarding Agent is a framework-aware assistant for understanding, setting up, running, troubleshooting, and extending AI Kafka Validator.
 
-## What It Does
+## What Changed in Version 2
 
-It retrieves information from the repository itself, including:
+The agent no longer behaves like a raw retriever that dumps file references before answering.
+
+Version 2 now:
+
+- classifies user intent first
+- retrieves relevant project context from the repository
+- generates a human-friendly answer with either:
+  - an optional LLM-backed mode
+  - or a deterministic fallback mode
+- appends a short relevant-files section only when it adds value
+- handles broad onboarding questions, small talk, troubleshooting, and enterprise adaptation more gracefully
+
+## Intent Routing
+
+The current intent set is:
+
+- `small_talk`
+- `framework_overview`
+- `setup_run`
+- `troubleshooting`
+- `project_navigation`
+- `execution_help`
+- `kafka_explanation`
+- `agent_explanation`
+- `enterprise_adaptation`
+- `unknown_but_general`
+
+This keeps routing deterministic while still allowing the answer-generation layer to sound natural.
+
+## Retrieval Sources
+
+The agent retrieves from the project itself, including:
 
 - `README.md`
 - `docs/*.md`
@@ -21,39 +52,43 @@ It retrieves information from the repository itself, including:
 - server files
 - Failure Analysis Agent files
 
-It is designed to answer questions such as:
+## Answer Generation Modes
 
-- how to run the framework in Docker or locally
-- how Kafka validation works in this project
-- which files implement relationship validation
-- how to run tagged suites such as negative or transaction Kafka scenarios
-- why Kafka tests are not working locally
-- how the framework could be adapted for real Kafka clusters, CI/CD, databases, or real backends
+### Deterministic fallback mode
 
-## Retrieval Approach
+This mode is always available.
+It uses intent-aware templates plus retrieved project context.
 
-Version 1 uses deterministic local retrieval:
+### Optional LLM-backed mode
 
-- project files are indexed from the repository itself
-- markdown files are chunked by section
-- feature files are chunked by feature and scenario boundaries
-- code and config files are chunked in small line windows
-- the agent scores chunks lexically against the user question and answers from the highest-scoring sources first
+If model configuration is present, the onboarding agent will use an LLM to turn the retrieved framework context into a more natural answer while still keeping deterministic routing and references outside the main answer body.
 
-This keeps the agent local, reproducible, and easy to explain. It does not require external AI APIs or a remote vector database.
+Supported configuration:
+
+- shared `.env` or environment variables: `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_BASE_URL`, `OPENAI_TEMPERATURE`
+- onboarding-specific overrides: `ONBOARDING_LLM_API_KEY`, `ONBOARDING_LLM_MODEL`, `ONBOARDING_LLM_BASE_URL`, `ONBOARDING_LLM_TEMPERATURE`
+
+System property equivalents are also supported:
+
+- `-Donboarding.llm.apiKey=...`
+- `-Donboarding.llm.model=...`
+- `-Donboarding.llm.baseUrl=...`
+- `-Donboarding.llm.temperature=...`
+
+If LLM mode is configured but unavailable at runtime, the agent falls back to deterministic mode.
 
 ## Entry Points
 
 Run one question directly:
 
 ```bash
-sh ./mvnw -q exec:java -Dexec.mainClass=com.analysis.onboarding.SetupOnboardingAgent -Dagent.question="How do I run only negative scenarios?"
+sh ./mvnw -q exec:java -Dexec.mainClass=com.analysis.onboarding.SetupOnboardingAgent -Dagent.question="How does this framework work?"
 ```
 
 Run with command-line arguments:
 
 ```bash
-sh ./mvnw -q exec:java -Dexec.mainClass=com.analysis.onboarding.SetupOnboardingAgent -Dexec.args="How does Kafka publishing work in this framework?"
+sh ./mvnw -q exec:java -Dexec.mainClass=com.analysis.onboarding.SetupOnboardingAgent -Dexec.args="How do I run only negative scenarios?"
 ```
 
 Run interactive mode:
@@ -62,24 +97,17 @@ Run interactive mode:
 sh ./mvnw -q exec:java -Dexec.mainClass=com.analysis.onboarding.SetupOnboardingAgent
 ```
 
-## Output Style
+## Example Questions
 
-Depending on the question, the agent answers with structured sections such as:
-
-- direct answer
-- exact steps / commands
-- relevant project files
-- environment checks
-- common mistakes to avoid
-- optional next step
-
-For enterprise adaptation questions it separates:
-
-- current framework behavior
-- what would change in a real system
-- recommended integration pattern
-- constraints / assumptions
-- safe next steps
+- `What is this framework?`
+- `How does this framework work?`
+- `How do I run it in Docker?`
+- `How do I run only Kafka tests?`
+- `Where are the reports?`
+- `How does Kafka publishing work here?`
+- `Why can't I run Kafka tests locally?`
+- `How would I adapt this to a real Kafka cluster?`
+- `How would I integrate this into CI/CD?`
 
 ## Environment Checks
 
@@ -98,4 +126,4 @@ For setup and troubleshooting questions, the agent performs lightweight checks s
 - the Setup / Onboarding Agent helps users understand, set up, run, troubleshoot, and extend the framework
 - the Failure Analysis Agent explains why a failed run happened after execution artifacts are produced
 
-Both agents are local and deterministic. Neither depends on external AI APIs or a remote vector database.
+Both agents are local. The onboarding agent is question-driven and repo-aware; the failure agent is artifact-driven and post-run focused.
