@@ -1,16 +1,67 @@
+# --- Existing IDE & System Trash ---
 .idea/
 .vscode/
 .settings/
 .classpath
 .project
 *.iml
+.DS_Store
+Thumbs.db
+
+# --- Build & Output Folders ---
 out/
 target/
-server/node_modules/
+dist/
+build/
+bin/
+
+# --- Python Bytecode & Cache ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.tox/
+.nox/
+.coverage
+*.db
+.mypy_cache/
+
+# --- Virtual Environments ---
+.venv/
+venv/
+ENV/
+env/
+
+# --- Environment Variables & Secrets ---
 .env*
 !.env.example
+
+# --- Logs ---
 *.log
 logs/
 run.log
-.DS_Store
-Thumbs.db
+
+# --- Dependencies & Packaging ---
+node_modules/
+server/node_modules/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+
+# --- AI & Data 
+.ipynb_checkpoints
+data/
+!data/.gitkeep
