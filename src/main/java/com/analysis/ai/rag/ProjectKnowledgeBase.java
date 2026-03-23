@@ -1,6 +1,4 @@
-package com.analysis.onboarding;
-
-import com.analysis.onboarding.model.ProjectChunk;
+package com.analysis.ai.rag;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -13,13 +11,13 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class OnboardingKnowledgeBase {
+public class ProjectKnowledgeBase {
     private static final int GENERIC_CHUNK_SIZE = 40;
     private static final int GENERIC_CHUNK_OVERLAP = 8;
 
     private final Path projectRoot;
 
-    public OnboardingKnowledgeBase(Path projectRoot) {
+    public ProjectKnowledgeBase(Path projectRoot) {
         this.projectRoot = projectRoot;
     }
 
@@ -54,6 +52,7 @@ public class OnboardingKnowledgeBase {
         addTree(files, projectRoot.resolve("src/test/java/com/runners"));
         addTree(files, projectRoot.resolve("src/test/java/com/utils"));
         addTree(files, projectRoot.resolve("src/main/java/com/analysis/failure"));
+        addTree(files, projectRoot.resolve("src/main/java/com/analysis/ai"));
 
         return files.stream()
                 .filter(this::isSupportedKnowledgeFile)

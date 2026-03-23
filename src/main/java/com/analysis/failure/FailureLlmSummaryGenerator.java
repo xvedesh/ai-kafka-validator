@@ -4,9 +4,9 @@ import com.analysis.ai.OpenAiCompatibleClient;
 import com.analysis.ai.OpenAiCompatibleConfig;
 import com.analysis.ai.StructuredKnowledgeLayer;
 import com.analysis.failure.model.FailureAnalysis;
-import com.analysis.onboarding.OnboardingKnowledgeBase;
-import com.analysis.onboarding.RetrievalService;
-import com.analysis.onboarding.model.ProjectChunk;
+import com.analysis.ai.rag.ProjectChunk;
+import com.analysis.ai.rag.ProjectKnowledgeBase;
+import com.analysis.ai.rag.RetrievalService;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -38,7 +38,7 @@ public class FailureLlmSummaryGenerator {
 
     private RetrievalService buildRetrievalService(Path projectRoot) {
         try {
-            return new RetrievalService(new OnboardingKnowledgeBase(projectRoot).load());
+            return new RetrievalService(new ProjectKnowledgeBase(projectRoot).load());
         } catch (Exception exception) {
             return new RetrievalService(List.of());
         }
