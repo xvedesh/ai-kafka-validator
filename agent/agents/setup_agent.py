@@ -11,7 +11,7 @@ class SetupAgent:
     def __init__(self, api_key: str):
         self.client = OpenAI(api_key=api_key)
         self.system_prompt = self._load_prompt()
-        self.model = os.getenv("AGENT_OPENAI_MODEL") or os.getenv("OPENAI_MODEL") or "gpt-5-mini"
+        self.model = os.getenv("AGENT_OPENAI_MODEL") or os.getenv("OPENAI_MODEL") or "gpt-4.1-mini"
 
     def _load_prompt(self) -> str:
         prompt_path = Path(__file__).resolve().parent.parent / "prompts" / "setup_prompt.txt"

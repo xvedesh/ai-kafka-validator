@@ -30,8 +30,10 @@ public class FailureAnalysisService {
                 .toList();
 
         String aiSummary = new FailureLlmSummaryGenerator(projectRoot).tryGenerateSummary(analyses, mode);
-        String markdown = FailureFormatter.format(analyses, mode, aiSummary);
-        String html = FailureHtmlFormatter.format(analyses, mode, aiSummary);
+        String rerunCommand = analyses.isEmpty() ? null
+                : new RerunCommandBuilder(projectRoot).build(analyses);
+        String markdown = FailureFormatter.format(analyses, mode, aiSummary, rerunCommand);
+        String html = FailureHtmlFormatter.format(analyses, mode, aiSummary, rerunCommand);
 
         Path targetDir = projectRoot.resolve("target");
         Path markdownPath = targetDir.resolve("failure-analysis.md");
@@ -45,7 +47,7 @@ public class FailureAnalysisService {
             deleteIfExists(htmlPath);
             deleteIfExists(surefireHtmlPath);
             deleteIfExists(cucumberHtmlPath);
-            return new Result(analyses, markdown, null, markdownPath, null, null, null, aiSummary);
+            return new Result(analyses, markdown, null, markdownPath, null, null, null, aiSummary, null);
         }
 
         writeString(markdownPath, markdown);
@@ -53,7 +55,7 @@ public class FailureAnalysisService {
         writeString(surefireHtmlPath, html);
         writeString(cucumberHtmlPath, html);
 
-        return new Result(analyses, markdown, html, markdownPath, htmlPath, surefireHtmlPath, cucumberHtmlPath, aiSummary);
+        return new Result(analyses, markdown, html, markdownPath, htmlPath, surefireHtmlPath, cucumberHtmlPath, aiSummary, rerunCommand);
     }
 
     private void writeString(Path path, String value) throws IOException {
@@ -76,9 +78,11 @@ public class FailureAnalysisService {
         private final Path surefireHtmlPath;
         private final Path cucumberHtmlPath;
         private final String aiSummary;
+        private final String rerunCommand;
 
         public Result(List<FailureAnalysis> analyses, String markdown, String html, Path markdownPath,
-                      Path htmlPath, Path surefireHtmlPath, Path cucumberHtmlPath, String aiSummary) {
+                      Path htmlPath, Path surefireHtmlPath, Path cucumberHtmlPath, String aiSummary,
+                      String rerunCommand) {
             this.analyses = analyses;
             this.markdown = markdown;
             this.html = html;
@@ -87,6 +91,7 @@ public class FailureAnalysisService {
             this.surefireHtmlPath = surefireHtmlPath;
             this.cucumberHtmlPath = cucumberHtmlPath;
             this.aiSummary = aiSummary;
+            this.rerunCommand = rerunCommand;
         }
 
         public List<FailureAnalysis> getAnalyses() {
@@ -119,6 +124,10 @@ public class FailureAnalysisService {
 
         public String getAiSummary() {
             return aiSummary;
+        }
+
+        public String getRerunCommand() {
+            return rerunCommand;
         }
     }
 }

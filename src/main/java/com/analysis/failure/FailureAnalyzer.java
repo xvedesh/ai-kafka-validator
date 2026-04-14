@@ -27,6 +27,8 @@ public class FailureAnalyzer {
         List<String> evidencePoints = buildEvidencePoints(evidence);
         List<CodeReference> codeReferences = buildCodeReferences(evidence, category);
         List<String> nextChecks = buildNextChecks(evidence, category);
+        List<com.analysis.failure.model.FixProposal> fixProposals =
+                new FixProposer().propose(category, evidence);
 
         return new FailureAnalysis(
                 evidence,
@@ -38,7 +40,8 @@ public class FailureAnalyzer {
                 evidencePoints,
                 codeReferences,
                 nextChecks,
-                buildConfidence(category)
+                buildConfidence(category),
+                fixProposals
         );
     }
 
@@ -468,7 +471,7 @@ public class FailureAnalyzer {
 
     private String detectAction(FailureEvidence evidence) {
         String combined = (evidence.getScenarioName() + " " + evidence.getFailedStepText()).toLowerCase(Locale.ROOT);
-        if (combined.contains(" patch ")) {
+        if (combined.contains("patch")) {
             return "patch";
         }
         if (combined.contains("delete")) {

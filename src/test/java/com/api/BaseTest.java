@@ -30,8 +30,6 @@ public class BaseTest {
 
     public static void generateToken() {
         token.set("Bearer " + given()
-                .log()
-                .all()
                 .headers(returnAuthHeaders())
                 .body(returnCredentials())
                 .when()

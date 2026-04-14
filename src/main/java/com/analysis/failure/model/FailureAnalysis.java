@@ -17,10 +17,12 @@ public class FailureAnalysis {
     private final List<CodeReference> codeReferences;
     private final List<String> nextChecks;
     private final String confidence;
+    private final List<FixProposal> fixProposals;
 
     public FailureAnalysis(FailureEvidence evidence, FailureCategory category, String likelyLayer, String shortExplanation,
                            String whatHappened, String rootCause, List<String> evidencePoints,
-                           List<CodeReference> codeReferences, List<String> nextChecks, String confidence) {
+                           List<CodeReference> codeReferences, List<String> nextChecks, String confidence,
+                           List<FixProposal> fixProposals) {
         this.evidence = evidence;
         this.category = category;
         this.likelyLayer = likelyLayer;
@@ -31,6 +33,7 @@ public class FailureAnalysis {
         this.codeReferences = new ArrayList<>(codeReferences);
         this.nextChecks = new ArrayList<>(nextChecks);
         this.confidence = confidence;
+        this.fixProposals = new ArrayList<>(fixProposals);
     }
 
     public FailureEvidence getEvidence() {
@@ -71,5 +74,9 @@ public class FailureAnalysis {
 
     public String getConfidence() {
         return confidence;
+    }
+
+    public List<FixProposal> getFixProposals() {
+        return Collections.unmodifiableList(fixProposals);
     }
 }

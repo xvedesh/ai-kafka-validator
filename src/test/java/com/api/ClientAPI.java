@@ -21,8 +21,6 @@ public class ClientAPI extends BaseTest implements PayLoadValidator {
     @Override
     public void post() {
         Response response = given()
-                .log()
-                .all()
                 .headers(returnAuthHeaders())
                 .body(returnBody())
                 .when()
@@ -34,8 +32,6 @@ public class ClientAPI extends BaseTest implements PayLoadValidator {
     @Override
     public void patch() {
         Response response = given()
-                .log()
-                .all()
                 .headers(returnAuthHeaders())
                 .pathParam("clientId", client.get().getId())
                 .body(patchBody())
@@ -48,8 +44,6 @@ public class ClientAPI extends BaseTest implements PayLoadValidator {
     @Override
     public void put() {
         Response response = given()
-                .log()
-                .all()
                 .headers(returnAuthHeaders())
                 .pathParam("clientId", client.get().getId())
                 .body(putBody())
@@ -62,8 +56,6 @@ public class ClientAPI extends BaseTest implements PayLoadValidator {
     @Override
     public void delete() {
         Response response = given()
-                .log()
-                .all()
                 .headers(returnAuthHeaders())
                 .pathParam("clientId", client.get().getId())
                 .when()
@@ -76,8 +68,6 @@ public class ClientAPI extends BaseTest implements PayLoadValidator {
     @Override
     public JSONObject get() {
         Response response = given()
-                .log()
-                .all()
                 .headers(returnAuthHeaders())
                 .pathParam("clientId", client.get().getId())
                 .when()
