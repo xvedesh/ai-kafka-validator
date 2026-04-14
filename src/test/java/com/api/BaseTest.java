@@ -34,7 +34,8 @@ public class BaseTest {
                 .body(returnCredentials())
                 .when()
                 .post(baseURI + authEndPoint)
-                .prettyPeek()
+                .then()
+                .extract()
                 .path("accessToken"));
     }
 

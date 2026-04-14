@@ -24,8 +24,7 @@ public class ClientAPI extends BaseTest implements PayLoadValidator {
                 .headers(returnAuthHeaders())
                 .body(returnBody())
                 .when()
-                .post(baseURI + allClientsEndPoint)
-                .prettyPeek();
+                .post(baseURI + allClientsEndPoint);
         latestResponse.set(response);
     }
 
@@ -36,8 +35,7 @@ public class ClientAPI extends BaseTest implements PayLoadValidator {
                 .pathParam("clientId", client.get().getId())
                 .body(patchBody())
                 .when()
-                .patch(baseURI + clientEndPoint)
-                .prettyPeek();
+                .patch(baseURI + clientEndPoint);
         latestResponse.set(response);
     }
 
@@ -48,8 +46,7 @@ public class ClientAPI extends BaseTest implements PayLoadValidator {
                 .pathParam("clientId", client.get().getId())
                 .body(putBody())
                 .when()
-                .put(baseURI + clientEndPoint)
-                .prettyPeek();
+                .put(baseURI + clientEndPoint);
         latestResponse.set(response);
     }
 
@@ -59,8 +56,7 @@ public class ClientAPI extends BaseTest implements PayLoadValidator {
                 .headers(returnAuthHeaders())
                 .pathParam("clientId", client.get().getId())
                 .when()
-                .delete(baseURI + clientEndPoint)
-                .prettyPeek();
+                .delete(baseURI + clientEndPoint);
         latestResponse.set(response);
         deletionSuccessful.set(response.getStatusCode() == 200);
     }
@@ -71,8 +67,7 @@ public class ClientAPI extends BaseTest implements PayLoadValidator {
                 .headers(returnAuthHeaders())
                 .pathParam("clientId", client.get().getId())
                 .when()
-                .get(baseURI + clientEndPoint)
-                .prettyPeek();
+                .get(baseURI + clientEndPoint);
         latestResponse.set(response);
 
         String responseBody = response.getBody().asString();

@@ -28,8 +28,7 @@ public class AccountAPI extends BaseTest implements PayLoadValidator {
                 .headers(returnAuthHeaders())
                 .body(buildCreateBody())
                 .when()
-                .post(baseURI + allAccountsEndPoint)
-                .prettyPeek();
+                .post(baseURI + allAccountsEndPoint);
         latestResponse.set(response);
     }
 
@@ -40,8 +39,7 @@ public class AccountAPI extends BaseTest implements PayLoadValidator {
                 .pathParam("clientId", account.get().getId())
                 .body(buildPatchBody())
                 .when()
-                .patch(baseURI + accountsEndPoint)
-                .prettyPeek();
+                .patch(baseURI + accountsEndPoint);
         latestResponse.set(response);
     }
 
@@ -52,8 +50,7 @@ public class AccountAPI extends BaseTest implements PayLoadValidator {
                 .pathParam("clientId", account.get().getId())
                 .body(buildPutBody())
                 .when()
-                .put(baseURI + accountsEndPoint)
-                .prettyPeek();
+                .put(baseURI + accountsEndPoint);
         latestResponse.set(response);
     }
 
@@ -63,8 +60,7 @@ public class AccountAPI extends BaseTest implements PayLoadValidator {
                 .headers(returnAuthHeaders())
                 .pathParam("clientId", account.get().getId())
                 .when()
-                .delete(baseURI + accountsEndPoint)
-                .prettyPeek();
+                .delete(baseURI + accountsEndPoint);
         latestResponse.set(response);
         deletionSuccessful.set(response.statusCode() == 200);
     }
@@ -75,8 +71,7 @@ public class AccountAPI extends BaseTest implements PayLoadValidator {
                 .headers(returnAuthHeaders())
                 .pathParam("clientId", account.get().getId())
                 .when()
-                .get(baseURI + accountsEndPoint)
-                .prettyPeek();
+                .get(baseURI + accountsEndPoint);
         latestResponse.set(response);
         return new JSONObject(response.getBody().asString());
     }

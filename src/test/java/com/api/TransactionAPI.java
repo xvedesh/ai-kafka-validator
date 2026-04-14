@@ -29,8 +29,7 @@ public class TransactionAPI extends BaseTest implements PayLoadValidator {
                 .headers(returnAuthHeaders())
                 .body(buildCreateBody())
                 .when()
-                .post(baseURI + allTransactionsEndPoint)
-                .prettyPeek();
+                .post(baseURI + allTransactionsEndPoint);
         latestResponse.set(response);
     }
 
@@ -41,8 +40,7 @@ public class TransactionAPI extends BaseTest implements PayLoadValidator {
                 .pathParam("clientId", transaction.get().getId())
                 .body(buildPatchBody())
                 .when()
-                .patch(baseURI + transactionsEndPoint)
-                .prettyPeek();
+                .patch(baseURI + transactionsEndPoint);
         latestResponse.set(response);
     }
 
@@ -53,8 +51,7 @@ public class TransactionAPI extends BaseTest implements PayLoadValidator {
                 .pathParam("clientId", transaction.get().getId())
                 .body(buildPutBody())
                 .when()
-                .put(baseURI + transactionsEndPoint)
-                .prettyPeek();
+                .put(baseURI + transactionsEndPoint);
         latestResponse.set(response);
     }
 
@@ -64,8 +61,7 @@ public class TransactionAPI extends BaseTest implements PayLoadValidator {
                 .headers(returnAuthHeaders())
                 .pathParam("clientId", transaction.get().getId())
                 .when()
-                .delete(baseURI + transactionsEndPoint)
-                .prettyPeek();
+                .delete(baseURI + transactionsEndPoint);
         latestResponse.set(response);
         deletionSuccessful.set(response.statusCode() == 200);
     }
@@ -76,8 +72,7 @@ public class TransactionAPI extends BaseTest implements PayLoadValidator {
                 .headers(returnAuthHeaders())
                 .pathParam("clientId", transaction.get().getId())
                 .when()
-                .get(baseURI + transactionsEndPoint)
-                .prettyPeek();
+                .get(baseURI + transactionsEndPoint);
         latestResponse.set(response);
         return new JSONObject(response.getBody().asString());
     }
