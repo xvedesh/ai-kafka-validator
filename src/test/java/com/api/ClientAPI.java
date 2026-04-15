@@ -21,54 +21,42 @@ public class ClientAPI extends BaseTest implements PayLoadValidator {
     @Override
     public void post() {
         Response response = given()
-                .log()
-                .all()
                 .headers(returnAuthHeaders())
                 .body(returnBody())
                 .when()
-                .post(baseURI + allClientsEndPoint)
-                .prettyPeek();
+                .post(baseURI + allClientsEndPoint);
         latestResponse.set(response);
     }
 
     @Override
     public void patch() {
         Response response = given()
-                .log()
-                .all()
                 .headers(returnAuthHeaders())
                 .pathParam("clientId", client.get().getId())
                 .body(patchBody())
                 .when()
-                .patch(baseURI + clientEndPoint)
-                .prettyPeek();
+                .patch(baseURI + clientEndPoint);
         latestResponse.set(response);
     }
 
     @Override
     public void put() {
         Response response = given()
-                .log()
-                .all()
                 .headers(returnAuthHeaders())
                 .pathParam("clientId", client.get().getId())
                 .body(putBody())
                 .when()
-                .put(baseURI + clientEndPoint)
-                .prettyPeek();
+                .put(baseURI + clientEndPoint);
         latestResponse.set(response);
     }
 
     @Override
     public void delete() {
         Response response = given()
-                .log()
-                .all()
                 .headers(returnAuthHeaders())
                 .pathParam("clientId", client.get().getId())
                 .when()
-                .delete(baseURI + clientEndPoint)
-                .prettyPeek();
+                .delete(baseURI + clientEndPoint);
         latestResponse.set(response);
         deletionSuccessful.set(response.getStatusCode() == 200);
     }
@@ -76,13 +64,10 @@ public class ClientAPI extends BaseTest implements PayLoadValidator {
     @Override
     public JSONObject get() {
         Response response = given()
-                .log()
-                .all()
                 .headers(returnAuthHeaders())
                 .pathParam("clientId", client.get().getId())
                 .when()
-                .get(baseURI + clientEndPoint)
-                .prettyPeek();
+                .get(baseURI + clientEndPoint);
         latestResponse.set(response);
 
         String responseBody = response.getBody().asString();

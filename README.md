@@ -6,6 +6,11 @@ AI Kafka Validator is an AI-powered Kafka messaging validation testing framework
 
 This framework validates both API responses and Kafka event side effects, including business relationship rules, negative scenarios, and chained cross-entity flows.
 
+It also includes two AI-powered agents:
+
+- the Setup / Troubleshooting Agent in `agent/`, which helps users choose the right run mode, execute the framework, open reports, and troubleshoot setup issues
+- the Failure Analysis Agent, which inspects real execution artifacts and produces structured root-cause guidance after failed runs
+
 It covers:
 
 - synchronous API response validation
@@ -14,12 +19,109 @@ It covers:
 - negative scenarios that verify failed operations do not emit matching Kafka events
 - repeatable runtime data reset through `seed-data.json -> clients.json`
 
+## Setup / Troubleshooting Agent
+
+The primary setup and troubleshooting assistant for this repository is the Python agent in [agent/](agent). It is designed to help you choose the correct run mode, execute the framework safely, open reports, troubleshoot setup issues, and guide you to the Failure Analysis Agent when you need post-run investigation.
+
+Use this agent first when you want help with:
+
+- setting up the framework on your machine
+- choosing between full Docker and hybrid local execution
+- running tests and opening reports
+- troubleshooting startup, Kafka, or report issues
+- understanding the supported setup flow before running commands
+- learning how to use the Failure Analysis Agent after a failed run
+
+### Activate and Run the Agent
+
+From the project root:
+
+```bash
+cd agent
+source .venv/bin/activate
+python main.py
+```
+
+You will then see:
+
+```text
+AI Kafka Validator Setup Assistant
+Type 'exit' to quit.
+```
+
+### How to Use It
+
+Ask the agent practical setup or troubleshooting questions such as:
+
+- `Help me set up this framework on my machine`
+- `Should I use full Docker or hybrid local?`
+- `How do I run the tests locally?`
+- `How do I open the reports?`
+- `Why are Kafka tests failing locally?`
+- `How do I use the Failure Analysis Agent?`
+- `How do I open the failure analysis report?`
+
+The agent is grounded in repository knowledge and should guide you through the supported framework flows, including:
+
+- full Docker execution through `docker-compose.yml`
+- hybrid local execution through `docker-compose.kafka.yml`
+- starting the local Node mock server before running hybrid local tests
+- opening generated reports under `target/`
+- rerunning or inspecting the Failure Analysis Agent output
+
+Optional LLM configuration:
+
+- shared `.env` or environment variables: `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_BASE_URL`, `OPENAI_TEMPERATURE`
+
+Additional Python-agent details are documented in [agent/](agent).
+
+
+## Failure Analysis Agent
+
+The Failure Analysis Agent is the second AI-powered agent in the framework. It inspects real execution artifacts and produces a structured failure investigation report.
+
+It uses artifacts such as:
+
+- `target/cucumber.json`
+- `target/rerun.txt`
+- `target/surefire-reports/TestSuite.txt`
+
+Automatic behavior:
+
+- after TestNG execution finishes, the framework runs the Failure Analysis Agent automatically
+- if failed scenarios are present, it writes:
+  - `target/failure-analysis.md`
+  - `target/failure-analysis.html`
+  - `target/surefire-reports/failure-analysis.html`
+  - `target/cucumber/cucumber-html-reports/failure-analysis.html`
+
+Run the agent manually for all detected failures:
+
+```bash
+sh ./mvnw -q exec:java -Dexec.mainClass=com.analysis.failure.FailureAnalysisAgent
+```
+
+Run the agent for only the most recent failed scenario:
+
+```bash
+sh ./mvnw -q exec:java \
+  -Dexec.mainClass=com.analysis.failure.FailureAnalysisAgent \
+  -Dfailure.analysis.mode=latest
+```
+
+Manual PowerShell command:
+
+```powershell
+.\mvnw.cmd -q exec:java --% -Dexec.mainClass=com.analysis.failure.FailureAnalysisAgent
+```
+
+
 ## Key Capabilities
 
 - RestAssured-based API automation with Cucumber + TestNG execution
 - full CRUD coverage for `Client`, `Account`, `Portfolio`, and `Transaction`
 - Kafka E2E validation for successful create, update, patch, and delete flows
-- negative business validation scenarios with “no Kafka event published” assertions
+- negative business validation scenarios with "no Kafka event published" assertions
 - cross-entity business flow coverage across client, account, and transaction
 - JWT-based authentication flow against the mock API
 - Docker-based execution for Kafka, mock API, and Java test suite
@@ -27,7 +129,7 @@ It covers:
 - protected runtime data via `seed-data.json -> clients.json` reset flow
 - HTML, JSON, Pretty Cucumber, and Surefire reports
 - automatic and manual failure analysis through the Failure Analysis Agent
-- local setup and onboarding assistance through the Setup / Onboarding Agent
+- AI-powered guidance through two built-in agents: the Setup / Troubleshooting Agent and the Failure Analysis Agent
 
 ## Quick Start
 
@@ -174,7 +276,7 @@ Example server-side messages:
 
 ## Kafka Event Validation
 
-Kafka validation is not based on “first message in topic”. The framework consumes by matching the business key for the current scenario.
+Kafka validation is not based on "first message in topic". The framework consumes by matching the business key for the current scenario.
 
 Matching strategy:
 
@@ -606,63 +708,6 @@ sh ./mvnw test \
   -DkafkaPortfolioEventsTopic=portfolio-events \
   -DkafkaTransactionEventsTopic=transaction-events
 ```
-
-## Failure Analysis Agent
-
-The Failure Analysis Agent inspects real execution artifacts and produces a structured failure investigation report.
-
-It uses artifacts such as:
-
-- `target/cucumber.json`
-- `target/rerun.txt`
-- `target/surefire-reports/TestSuite.txt`
-
-Automatic behavior:
-
-- after TestNG execution finishes, the framework runs the Failure Analysis Agent automatically
-- if failed scenarios are present, it writes:
-  - `target/failure-analysis.md`
-  - `target/failure-analysis.html`
-  - `target/surefire-reports/failure-analysis.html`
-  - `target/cucumber/cucumber-html-reports/failure-analysis.html`
-
-Run the agent manually for all detected failures:
-
-```bash
-sh ./mvnw -q exec:java -Dexec.mainClass=com.analysis.failure.FailureAnalysisAgent
-```
-
-Run the agent for only the most recent failed scenario:
-
-```bash
-sh ./mvnw -q exec:java \
-  -Dexec.mainClass=com.analysis.failure.FailureAnalysisAgent \
-  -Dfailure.analysis.mode=latest
-```
-
-Manual PowerShell command:
-
-```powershell
-.\mvnw.cmd -q exec:java --% -Dexec.mainClass=com.analysis.failure.FailureAnalysisAgent
-```
-
-## Setup / Onboarding Agent
-
-The Setup / Onboarding Agent is a local RAG-style assistant for understanding, setting up, running, troubleshooting, and extending this framework.
-
-Run one question directly:
-
-```bash
-sh ./mvnw -q exec:java -Dexec.mainClass=com.analysis.onboarding.SetupOnboardingAgent -Dagent.question="How do I run only negative scenarios?"
-```
-
-Run interactive mode:
-
-```bash
-sh ./mvnw -q exec:java -Dexec.mainClass=com.analysis.onboarding.SetupOnboardingAgent
-```
-
-Additional details and usage examples are documented in [docs/onboarding-agent.md](docs/onboarding-agent.md).
 
 ## Enterprise Adoption / How to Extend
 

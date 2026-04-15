@@ -27,17 +27,21 @@ public class FailureAnalyzer {
         List<String> evidencePoints = buildEvidencePoints(evidence);
         List<CodeReference> codeReferences = buildCodeReferences(evidence, category);
         List<String> nextChecks = buildNextChecks(evidence, category);
+        List<com.analysis.failure.model.FixProposal> fixProposals =
+                new FixProposer().propose(category, evidence);
 
         return new FailureAnalysis(
                 evidence,
                 category,
+                buildLikelyLayer(category),
                 buildShortExplanation(evidence, category),
                 buildWhatHappened(evidence),
                 buildRootCause(evidence, category),
                 evidencePoints,
                 codeReferences,
                 nextChecks,
-                buildConfidence(category)
+                buildConfidence(category),
+                fixProposals
         );
     }
 
@@ -121,6 +125,18 @@ public class FailureAnalyzer {
         }
 
         return FailureCategory.UNKNOWN;
+    }
+
+    private String buildLikelyLayer(FailureCategory category) {
+        return switch (category) {
+            case API_ASSERTION_FAILURE -> "API";
+            case KAFKA_EVENT_NOT_FOUND, KAFKA_PAYLOAD_MISMATCH -> "Kafka";
+            case RELATIONSHIP_VALIDATION_FAILURE, DELETE_DEPENDENCY_FAILURE -> "Server/Business Rules";
+            case CONFIGURATION_ERROR -> "Configuration";
+            case INFRASTRUCTURE_ERROR -> "Infrastructure";
+            case TEST_DATA_ISSUE -> "Test Data/Scenario State";
+            case UNKNOWN -> "Unknown";
+        };
     }
 
     private String buildShortExplanation(FailureEvidence evidence, FailureCategory category) {
@@ -455,7 +471,7 @@ public class FailureAnalyzer {
 
     private String detectAction(FailureEvidence evidence) {
         String combined = (evidence.getScenarioName() + " " + evidence.getFailedStepText()).toLowerCase(Locale.ROOT);
-        if (combined.contains(" patch ")) {
+        if (combined.contains("patch")) {
             return "patch";
         }
         if (combined.contains("delete")) {

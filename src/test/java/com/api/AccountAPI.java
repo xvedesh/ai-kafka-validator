@@ -25,54 +25,42 @@ public class AccountAPI extends BaseTest implements PayLoadValidator {
     @Override
     public void post() {
         Response response = given()
-                .log()
-                .all()
                 .headers(returnAuthHeaders())
                 .body(buildCreateBody())
                 .when()
-                .post(baseURI + allAccountsEndPoint)
-                .prettyPeek();
+                .post(baseURI + allAccountsEndPoint);
         latestResponse.set(response);
     }
 
     @Override
     public void patch() {
         Response response = given()
-                .log()
-                .all()
                 .headers(returnAuthHeaders())
                 .pathParam("clientId", account.get().getId())
                 .body(buildPatchBody())
                 .when()
-                .patch(baseURI + accountsEndPoint)
-                .prettyPeek();
+                .patch(baseURI + accountsEndPoint);
         latestResponse.set(response);
     }
 
     @Override
     public void put() {
         Response response = given()
-                .log()
-                .all()
                 .headers(returnAuthHeaders())
                 .pathParam("clientId", account.get().getId())
                 .body(buildPutBody())
                 .when()
-                .put(baseURI + accountsEndPoint)
-                .prettyPeek();
+                .put(baseURI + accountsEndPoint);
         latestResponse.set(response);
     }
 
     @Override
     public void delete() {
         Response response = given()
-                .log()
-                .all()
                 .headers(returnAuthHeaders())
                 .pathParam("clientId", account.get().getId())
                 .when()
-                .delete(baseURI + accountsEndPoint)
-                .prettyPeek();
+                .delete(baseURI + accountsEndPoint);
         latestResponse.set(response);
         deletionSuccessful.set(response.statusCode() == 200);
     }
@@ -80,13 +68,10 @@ public class AccountAPI extends BaseTest implements PayLoadValidator {
     @Override
     public JSONObject get() {
         Response response = given()
-                .log()
-                .all()
                 .headers(returnAuthHeaders())
                 .pathParam("clientId", account.get().getId())
                 .when()
-                .get(baseURI + accountsEndPoint)
-                .prettyPeek();
+                .get(baseURI + accountsEndPoint);
         latestResponse.set(response);
         return new JSONObject(response.getBody().asString());
     }

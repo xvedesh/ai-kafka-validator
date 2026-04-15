@@ -1,4 +1,4 @@
-package com.analysis.onboarding.model;
+package com.analysis.ai.rag;
 
 public record ProjectChunk(
         String path,

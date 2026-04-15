@@ -1,6 +1,4 @@
-package com.analysis.onboarding;
-
-import com.analysis.onboarding.model.ProjectChunk;
+package com.analysis.ai.rag;
 
 import java.util.ArrayList;
 import java.util.Comparator;
